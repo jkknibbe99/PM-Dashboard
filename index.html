@@ -1,0 +1,175 @@
+<html>
+    <head>
+        <title>PM Dashboard</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+        <style>
+            body {
+                background-color: lightgray;
+            }
+
+            nav {
+                margin-bottom: 50px;
+            }
+
+            main {
+                width: fit-content;
+                margin: auto;
+            }
+
+            #top {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            #template-charts-section {
+                display: none;
+            }
+
+            .charts-section {
+                margin-bottom: 50px;
+            }
+
+            .sheet-link {
+                display: block;
+            }
+
+            .chart-container {
+                width: fit-content;
+                display: inline-block;
+            }
+
+            .iframe-container {
+                width: fit-content;
+                background:url(images/loading-gif.gif) center center no-repeat;
+            }
+        </style>
+
+        <!-- jQuery 3.7 CDN -->
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+        <script>
+            const Data = {
+                chart_sections: [
+                    {
+                        name: 'Schedule Items',
+                        link_url: 'https://docs.google.com/spreadsheets/d/1Qprv-HyTSlRd1sO9pbGgeGDW_8nLGw6e7b5HaDjlaXY/edit#gid=0',
+                        charts: [
+                            {
+                                iframe_html: '<iframe width="566" height="527" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQhGv8tzyHVdJ_hUF3pdkLLFvO6hVq0a3l_cvuyKvl_FhlYvT-IoNmDdl5TjF0eTl2iMrXUd_DG88GY/pubchart?oid=1085901099&amp;format=image"></iframe>'
+                            },
+                            {
+                                iframe_html: '<iframe width="597" height="527" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQhGv8tzyHVdJ_hUF3pdkLLFvO6hVq0a3l_cvuyKvl_FhlYvT-IoNmDdl5TjF0eTl2iMrXUd_DG88GY/pubchart?oid=1758531859&amp;format=image"></iframe>'
+                            },
+                            {
+                                iframe_html: '<iframe width="1229" height="580" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQhGv8tzyHVdJ_hUF3pdkLLFvO6hVq0a3l_cvuyKvl_FhlYvT-IoNmDdl5TjF0eTl2iMrXUd_DG88GY/pubchart?oid=214035709&amp;format=image"></iframe>',
+                                on_newline: true
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            window.onload = () => {
+                for (let i = 0; i < Data.chart_sections.length; i++) {
+                    // Create new charts section
+                    const new_charts_section = $('#template-charts-section').clone();
+                    // Set values
+                    new_charts_section.attr('id', Data.chart_sections[i].name);
+                    new_charts_section.css('display', 'block');
+                    new_charts_section.find('.chart-section-title').html(Data.chart_sections[i].name);
+                    new_charts_section.find('.sheet-link').attr('href', Data.chart_sections[i].link_url);
+                    for (let j = 0; j < Data.chart_sections[i].charts.length; j++) {
+                        const new_chart_container = new_charts_section.find('.template-chart-container').clone();  // Create a new chart container
+                        new_chart_container.removeClass('template-chart-container');
+                        // replace iframe with new iframe code
+                        new_chart_container.find('.iframe-container').html(Data.chart_sections[i].charts[j].iframe_html);
+                        // Add new_chart_container to new_charts_section
+                        if (Data.chart_sections[i].charts[j].on_newline) {
+                            new_charts_section.find('.card-body').append('<br>');
+                        }
+                        new_charts_section.find('.card-body').append(new_chart_container);
+                    }
+                    // Remove template-chart-container
+                    new_charts_section.find('.template-chart-container').remove();
+                    // Add new_charts_section to main element
+                    $('main').append(new_charts_section);
+
+                    // Add Navbar link
+                    $('body nav .navbar-nav').append('<li class="nav-item"><a class="nav-link" href="#' + Data.chart_sections[i].name + '">' + Data.chart_sections[i].name + '</a></li>');
+                }
+
+                // Nav link active change function
+                $('.nav-link').on('click', function () {
+                    $('.nav-link').removeClass('active');
+                    setTimeout(() => {
+                        let hash = $(location).attr('hash');
+                        hash = hash && decodeURI(hash);
+                        $('.nav-link[href="' + hash + '"]').addClass('active');
+                    }, 100);
+                });
+
+                // Refresh chart function
+                $('.refresh-iframe-btn').on('click', function () {
+                    const iframe_elem = $(this).closest('.chart-container').find('iframe');
+                    const iframe_src = iframe_elem.attr('src');
+                    iframe_elem.attr('src', '');
+                    setTimeout(() => {
+                        iframe_elem.attr('src', iframe_src);
+                    }, 500);
+                });
+            }
+            
+        </script>        
+    </head>
+    <body>
+        <nav id="nav" class="navbar fixed-top navbar-expand-lg navbar-light bg-white shadow-lg">
+            <div class="container-fluid">
+                <span class="navbar-brand">PM Dashboard</span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#top">Top</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <nav class="navbar navbar-dark">
+            <h1 style="text-align: center;">PM Dashboard</h1>
+        </nav>
+        
+        <div id="top"></div>
+
+        <main>
+            <div id="template-charts-section" class="charts-section">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="chart-section-title">Template Charts Section</h3>
+                        <a class="sheet-link" href="#">Google Sheet</a>
+                        <div class="chart-container template-chart-container">
+                            <div class="iframe-container">
+                                <!-- iframe goes here -->
+                            </div>
+                            <br>
+                            <div style="width: fit-content; margin: auto;">
+                                <button class="btn btn-primary refresh-iframe-btn">Refresh Chart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        
+    </body>
+</html>
