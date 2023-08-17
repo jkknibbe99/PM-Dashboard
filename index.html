@@ -117,7 +117,7 @@
                 // Refresh chart function
                 $('.refresh-iframe-btn').on('click', function () {
                     const iframe_elem = $(this).closest('.chart-container').find('iframe');
-                    const iframe_src = iframe_elem.attr('src');
+                    const iframe_src = iframe_elem.attr('src') + '&timestamp=' + Date.now();
                     iframe_elem.attr('src', '');
                     setTimeout(() => {
                         iframe_elem.attr('src', iframe_src);
