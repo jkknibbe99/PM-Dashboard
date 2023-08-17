@@ -11,10 +11,6 @@
                 background-color: lightgray;
             }
 
-            nav {
-                margin-bottom: 50px;
-            }
-
             main {
                 width: fit-content;
                 margin: auto;
@@ -31,6 +27,7 @@
             }
 
             .charts-section {
+                padding-top: 60px;
                 margin-bottom: 50px;
             }
 
@@ -130,7 +127,10 @@
     <body>
         <nav id="nav" class="navbar fixed-top navbar-expand-lg navbar-light bg-white shadow-lg">
             <div class="container-fluid">
-                <span class="navbar-brand">PM Dashboard</span>
+                <div class="navbar-brand">
+                    <img src="images/EH Logo-11.png" width="75" height="75">
+                    PM Dashboard
+                </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -156,7 +156,7 @@
                     <div class="card-body">
                         <h3 class="chart-section-title">Template Charts Section</h3>
                         <a class="sheet-link" href="#">Google Sheet</a>
-                        <div class="chart-container template-chart-container">
+                        <div class="chart-container template-chart-container pb-3">
                             <div class="iframe-container">
                                 <!-- iframe goes here -->
                             </div>
